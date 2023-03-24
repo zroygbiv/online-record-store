@@ -17,6 +17,10 @@ spec:
           image: zroygbiv/records
           imagePullPolicy: Never
           env:
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
             - name: MONGO_URI
               value: "mongodb://records-mongo-srv:27017/records"
             - name: JWT_KEY
