@@ -1,6 +1,9 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { Record } from '../../models/record';
+import { natsWrapper } from '../../nats-wrapper';
+
+jest.mock('../../nats-wrapper');
 
 it('has route handler listening to /api/records for post requests', async () => {
   const response = await request(app)
@@ -81,4 +84,19 @@ it('creates record with valid inputs', async () => {
   expect(records.length).toEqual(1);
   expect(records[0].title).toEqual(title);
   expect(records[0].price).toEqual(20);
+});
+
+it('successfully publishes an event', async () => {
+  const title = 'asdgfghs';
+
+  await request(app)
+    .post('/api/records')
+    .set('Cookie', global.signin())
+    .send({
+      title,
+      price: 20
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

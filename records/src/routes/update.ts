@@ -1,12 +1,11 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { 
-  validateRequest, 
-  NotFoundError, 
-  requireAuth, 
-  NotAuthorizedError 
+  validateRequest, NotFoundError, requireAuth, NotAuthorizedError 
 } from '@zroygbiv-ors/sharedcode';
 import { Record } from '../models/record';
+import { RecordUpdatedPublisher } from '../events/publishers/record-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -29,7 +28,6 @@ router.put(
   if (!record) {
     throw new NotFoundError();
   }
-
   if (record.userId !== req.currentUser!.id) {
     throw new NotAuthorizedError();
   }
@@ -39,6 +37,12 @@ router.put(
     price: req.body.price
   });
   await record.save();
+  new RecordUpdatedPublisher(natsWrapper.client).publish({
+    id: record.id,
+    title: record.title,
+    price: record.price,
+    userId: record.userId
+  });
   
   res.send(record);
 });

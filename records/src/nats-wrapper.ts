@@ -20,11 +20,13 @@ class NatsWrapper {
         console.log('Connected to NATS');
         resolve();
       });
+
       this.client.on('error', (err) => {
         reject(err);
       });
     });
   }
+
 }
 
 export const natsWrapper = new NatsWrapper();
