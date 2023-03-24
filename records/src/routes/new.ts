@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { requireAuth, validateRequest } from '@zroygbiv-ors/sharedcode';
 import { Record } from '../models/record';
+import { RecordCreatedPublisher } from '../events/publishers/record-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
+
 
 const router = express.Router();
 
@@ -21,6 +24,12 @@ router.post('/api/records',
       userId: req.currentUser!.id
     });
     await record.save();
+    new RecordCreatedPublisher(natsWrapper.client).publish({
+      id: record.id,
+      title: record.title,
+      price: record.price,
+      userId: record.userId  
+    });
 
     res.status(201).send(record);
 });
