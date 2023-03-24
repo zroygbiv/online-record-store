@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: records-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: records-mongo
+  template:
+    metadata:
+      labels:
+        app: records-mongo
+    spec:
+      containers:
+        - name: records-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: records-mongo-srv
+spec:
+  selector:
+    app: records-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017 # default port for mongo
+      targetPort: 27017

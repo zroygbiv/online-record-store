@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: records-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: records
+  template:
+    metadata:
+      labels:
+        app: records
+    spec:
+      containers:
+        - name: records
+          image: zroygbiv/records
+          imagePullPolicy: Never
+          env:
+            - name: MONGO_URI
+              value: "mongodb://records-mongo-srv:27017/records"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: records-srv
+spec:
+  selector:
+    app: records
+  ports:
+    - name: records
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
