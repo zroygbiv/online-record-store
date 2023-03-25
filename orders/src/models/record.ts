@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Order, OrderStatus } from "./order";
 
 interface RecordAttrs {
   title: string;
@@ -8,6 +9,7 @@ interface RecordAttrs {
 export interface RecordDoc extends mongoose.Document {
   title: string;
   price: number;
+  isReserved(): Promise<boolean>;
 }
 
 interface RecordModel extends mongoose.Model<RecordDoc> {
@@ -35,7 +37,18 @@ const recordSchema = new mongoose.Schema({
 
 recordSchema.statics.build = (attrs: RecordAttrs) => {
   return new Record(attrs);
-}
+};
+
+recordSchema.methods.isReserved = async function() {
+  const existingOrder = await Order.findOne({
+    ticket: this,
+    status: {
+      $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Complete]
+    },
+  });
+
+  return !!existingOrder;
+};
 
 const Record = mongoose.model<RecordDoc, RecordModel>('Record', recordSchema);
 

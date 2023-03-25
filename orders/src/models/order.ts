@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { OrderStatus } from "@zroygbiv-ors/sharedcode";
 import { RecordDoc } from "./record";
 
+export { OrderStatus };
+
 interface OrderAttrs {
   userId: string;
   status: string;
