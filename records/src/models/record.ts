@@ -1,18 +1,18 @@
 import mongoose from "mongoose";
 
-// describes required props for creating new Ticket
+// describes required props for creating new Record
 interface RecordAttrs {
   title: string;
   price: number;
   userId: string;
 }
-// describes props Ticket Document has
+// describes props Record Document has
 interface RecordDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;
 }
-// describes props User Model has
+// describes props Record Model has
 interface RecordModel extends mongoose.Model<RecordDoc> {
   build(attrs: RecordAttrs): RecordDoc;
 }
