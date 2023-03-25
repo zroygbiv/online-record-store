@@ -4,11 +4,10 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
 import { currentUser, errorHandler, NotFoundError } from '@zroygbiv-ors/sharedcode'
-import { createRecordRouter } from './routes/new';
-import { showRecordRouter } from './routes/show';
-import { indexRecordRouter } from './routes';
-import { updateRecordRouter } from './routes/update';
-
+import { deleteOrderRouter } from './routes/delete';
+import { indexOrderRouter } from './routes';
+import { newOrderRouter } from './routes/new';
+import { showOrderRouter } from './routes/show';
 
 // instantiation of express application
 const app = express();
@@ -23,14 +22,14 @@ app.use(
 );
 
 app.use(currentUser);
-// create new ticket
-app.use(createRecordRouter);
-// show a ticket
-app.use(showRecordRouter);
-// show all tickets
-app.use(indexRecordRouter);
-// update ticket
-app.use(updateRecordRouter);
+// delete order
+app.use(deleteOrderRouter);
+// show all orders
+app.use(indexOrderRouter);
+// create order
+app.use(newOrderRouter);
+// show order
+app.use(showOrderRouter);
 
 // for routing all types of HTTP requests
 app.all('*', async (req, res) => {
