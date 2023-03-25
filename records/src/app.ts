@@ -23,13 +23,13 @@ app.use(
 );
 
 app.use(currentUser);
-// create new ticket
+// create new record
 app.use(createRecordRouter);
-// show a ticket
+// show a record
 app.use(showRecordRouter);
-// show all tickets
+// show all records
 app.use(indexRecordRouter);
-// update ticket
+// update record
 app.use(updateRecordRouter);
 
 // for routing all types of HTTP requests
