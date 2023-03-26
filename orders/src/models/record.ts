@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Order, OrderStatus } from "./order";
+import mongoose from 'mongoose';
+import { Order, OrderStatus } from './order';
 
 interface RecordAttrs {
   title: string;
@@ -16,34 +16,41 @@ interface RecordModel extends mongoose.Model<RecordDoc> {
   build(attrs: RecordAttrs): RecordDoc;
 }
 
-const recordSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
+const recordSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
   },
-  price: {
-    type: Number,
-    required: true,
-    min: 0
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
   }
-}, {
-  toJSON: {
-    transform(doc, ret) {
-      ret.id = ret._id;
-      delete ret._id;
-    }
-  }
-});
+);
 
 recordSchema.statics.build = (attrs: RecordAttrs) => {
   return new Record(attrs);
 };
-
-recordSchema.methods.isReserved = async function() {
+recordSchema.methods.isReserved = async function () {
+  // this === the record document that we just called 'isReserved' on
   const existingOrder = await Order.findOne({
-    ticket: this,
+    record: this,
     status: {
-      $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Complete]
+      $in: [
+        OrderStatus.Created,
+        OrderStatus.AwaitingPayment,
+        OrderStatus.Complete,
+      ],
     },
   });
 
