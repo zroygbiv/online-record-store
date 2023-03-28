@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Order, OrderStatus } from './order';
 
 interface RecordAttrs {
+  id: string;
   title: string;
   price: number;
 }
@@ -39,7 +40,11 @@ const recordSchema = new mongoose.Schema(
 );
 
 recordSchema.statics.build = (attrs: RecordAttrs) => {
-  return new Record(attrs);
+  return new Record({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price
+  });
 };
 recordSchema.methods.isReserved = async function () {
   // this === the record document that we just called 'isReserved' on
