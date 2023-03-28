@@ -3,6 +3,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Order, OrderStatus } from '../../models/order';
 import { Record } from '../../models/record';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('returns an error if the record does not exist', async () => {
   const recordId = new mongoose.Types.ObjectId();
@@ -52,4 +53,18 @@ it('reserves a record', async () => {
     .expect(201);
 });
 
-it.todo('emits an order created event');
+it('emits an order created event', async () => {
+  const record = Record.build({
+    title: 'Lazer Guided Melodies',
+    price: 20,
+  });
+  await record.save();
+
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({ recordId: record.id })
+    .expect(201);
+  
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
