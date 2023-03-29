@@ -13,6 +13,7 @@ interface RecordDoc extends mongoose.Document {
   price: number;
   userId: string;
   version: number;
+  orderId?: string;
 }
 // describes props Record Model has
 interface RecordModel extends mongoose.Model<RecordDoc> {
@@ -32,7 +33,11 @@ const recordSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true
-  }  
+  },
+  orderId: {
+    type: String,
+    required: false
+  } 
 }, {
   // customize how object gets converted to JSON
   toJSON: {
