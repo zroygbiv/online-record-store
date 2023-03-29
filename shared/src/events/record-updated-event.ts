@@ -8,5 +8,6 @@ export interface RecordUpdatedEvent {
     title: string;
     price: number;
     userId: string;
+    orderId?: string;
   };
 }
