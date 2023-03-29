@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // describes required props for creating new Record
 interface RecordAttrs {
@@ -11,6 +12,7 @@ interface RecordDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;
+  version: number;
 }
 // describes props Record Model has
 interface RecordModel extends mongoose.Model<RecordDoc> {
@@ -44,7 +46,8 @@ const recordSchema = new mongoose.Schema({
     }
   }
 });
-
+recordSchema.set('versionKey', 'version');
+recordSchema.plugin(updateIfCurrentPlugin);
 recordSchema.statics.build = (attrs: RecordAttrs) => {
   return new Record(attrs);
 };
