@@ -1,6 +1,6 @@
 import { Message } from "node-nats-streaming";
 import { Subjects, Listener, RecordCreatedEvent } from "@zroygbiv-ors/sharedcode";
-import { Record } from "../../src/models/record";
+import { Record } from "../../models/record";
 import { queueGroupName } from "./queue-group-name";
 
 export class RecordCreatedListener extends Listener<RecordCreatedEvent> {

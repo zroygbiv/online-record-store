@@ -5,7 +5,7 @@ import {
   NotAuthorizedError,
 } from '@zroygbiv-ors/sharedcode';
 import { Order, OrderStatus } from '../models/order';
-import { OrderCancelledPublisher } from '../../events/publishers/order-cancelled-publisher';
+import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -31,6 +31,7 @@ router.delete(
     // publish event that order was cancelled
     new OrderCancelledPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       record: {
         id: order.record.id
       },

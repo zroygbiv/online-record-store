@@ -18,6 +18,7 @@ it('returns an error if the record does not exist', async () => {
 it('returns an error if the record is already reserved', async () => {
   // create new record
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Lazer Guided Melodies',
     price: 20,
   });
@@ -41,6 +42,7 @@ it('returns an error if the record is already reserved', async () => {
 
 it('reserves a record', async () => {
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Lazer Guided Melodies',
     price: 20,
   });
@@ -55,6 +57,7 @@ it('reserves a record', async () => {
 
 it('emits an order created event', async () => {
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Lazer Guided Melodies',
     price: 20,
   });

@@ -1,6 +1,6 @@
 import { Message } from "node-nats-streaming";
 import { Subjects, RecordUpdatedEvent, Listener } from "@zroygbiv-ors/sharedcode";
-import { Record } from "../../src/models/record";
+import { Record } from "../../models/record";
 import { queueGroupName } from "./queue-group-name";
 
 export class RecordUpdatedListener extends Listener<RecordUpdatedEvent> {
@@ -8,7 +8,7 @@ export class RecordUpdatedListener extends Listener<RecordUpdatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: RecordUpdatedEvent['data'], msg: Message) {
-    const record = await Record.findById(data.id);
+    const record = await Record.findByEvent(data);
 
     if (!record) {
       throw new Error('Record not found');
@@ -19,5 +19,5 @@ export class RecordUpdatedListener extends Listener<RecordUpdatedEvent> {
     await record.save();
 
     msg.ack();
-  }
+  };
 }

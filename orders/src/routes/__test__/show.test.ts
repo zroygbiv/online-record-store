@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Record } from '../../models/record';
@@ -5,6 +6,7 @@ import { Record } from '../../models/record';
 it('fetches the order', async () => {
   // create new record
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Lazer Guided Melodies',
     price: 20,
   });
@@ -31,6 +33,7 @@ it('fetches the order', async () => {
 it('returns an error if one user tries to fetch another users order', async () => {
   // create new record
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),    
     title: 'Lazer Guided Melodies',
     price: 20,
   });

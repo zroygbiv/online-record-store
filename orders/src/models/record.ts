@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Order, OrderStatus } from './order';
 
 interface RecordAttrs {
@@ -10,11 +11,13 @@ interface RecordAttrs {
 export interface RecordDoc extends mongoose.Document {
   title: string;
   price: number;
+  version: number;
   isReserved(): Promise<boolean>;
 }
 
 interface RecordModel extends mongoose.Model<RecordDoc> {
   build(attrs: RecordAttrs): RecordDoc;
+  findByEvent(event: { id: string, version: number }): Promise<RecordDoc | null>;
 }
 
 const recordSchema = new mongoose.Schema(
@@ -38,6 +41,15 @@ const recordSchema = new mongoose.Schema(
     },
   }
 );
+recordSchema.set('versionKey', 'version');
+recordSchema.plugin(updateIfCurrentPlugin);
+
+recordSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+  return Record.findOne({
+    _id: event.id,
+    version: event.version - 1
+  });
+};
 
 recordSchema.statics.build = (attrs: RecordAttrs) => {
   return new Record({
@@ -46,6 +58,7 @@ recordSchema.statics.build = (attrs: RecordAttrs) => {
     price: attrs.price
   });
 };
+
 recordSchema.methods.isReserved = async function () {
   // this === the record document that we just called 'isReserved' on
   const existingOrder = await Order.findOne({

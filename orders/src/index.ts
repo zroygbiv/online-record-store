@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
-import { RecordCreatedListener } from '../events/listeners/record-created-listener';
-import { RecordUpdatedListener } from '../events/listeners/record-updated-listener';
+import { RecordCreatedListener } from './events/listeners/record-created-listener';
+import { RecordUpdatedListener } from './events/listeners/record-updated-listener';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {

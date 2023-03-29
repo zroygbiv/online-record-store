@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Order } from '../../models/order';
@@ -5,6 +6,7 @@ import { Record } from '../../models/record';
 
 const buildRecord = async () => {
   const record = Record.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Lazer Guided Melodies',
     price: 20,
   });
