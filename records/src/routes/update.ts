@@ -41,7 +41,8 @@ router.put(
     id: record.id,
     title: record.title,
     price: record.price,
-    userId: record.userId
+    userId: record.userId,
+    version: record.version
   });
   
   res.send(record);

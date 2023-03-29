@@ -27,7 +27,8 @@ router.post('/api/records',
       id: record.id,
       title: record.title,
       price: record.price,
-      userId: record.userId  
+      userId: record.userId,
+      version: record.version
     });
 
     res.status(201).send(record);
