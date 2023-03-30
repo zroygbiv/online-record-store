@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
+import { stripe } from '../stripe';
 import {
   requireAuth,
   validateRequest,
@@ -39,6 +40,15 @@ router.post('/api/payments',
     if (order.status === OrderStatus.Cancelled) {
       throw new BadRequestError('Payment not accepted on expired orders')
     }
-});
+
+    await stripe.charges.create({
+      currency: 'usd',
+      amount: order.price * 100,
+      source: token
+    });
+
+    res.send({ success: true });
+  }
+);
 
 export { router as createChargeRouter };
