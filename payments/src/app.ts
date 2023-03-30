@@ -2,6 +2,7 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
+import { createChargeRouter } from './routes/new-charge';
 
 import { currentUser, errorHandler, NotFoundError } from '@zroygbiv-ors/sharedcode'
 
@@ -18,6 +19,8 @@ app.use(
 );
 
 app.use(currentUser);
+
+app.use(createChargeRouter);
 
 // for routing all types of HTTP requests
 app.all('*', async (req, res) => {
