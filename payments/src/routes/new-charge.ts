@@ -10,6 +10,7 @@ import {
   OrderStatus
 } from '@zroygbiv-ors/sharedcode';
 import { Order } from '../models/order';
+import { Payment } from '../models/payment';
 
 const router = express.Router();
 
@@ -41,11 +42,18 @@ router.post('/api/payments',
       throw new BadRequestError('Payment not accepted on expired orders')
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: 'usd',
       amount: order.price * 100,
       source: token
     });
+
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id
+    });
+    await payment.save();
+
 
     res.status(201).send({ success: true });
   }

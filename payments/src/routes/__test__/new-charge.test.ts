@@ -3,6 +3,7 @@ import { OrderStatus } from '@zroygbiv-ors/sharedcode';
 import request from 'supertest';
 import { app } from '../../app';
 import { Order } from '../../models/order';
+import { Payment } from '../../models/payment';
 import { stripe } from '../../stripe';
 
 jest.mock('../../stripe');
@@ -57,7 +58,7 @@ it('returns 400 when purchasing cancelled order', async () => {
     });
 });
 
-it('returns a 204 with valid inputs', async () => {
+it('returns a 201 with valid inputs', async () => {
   const userId = new mongoose.Types.ObjectId().toHexString();
 
   const order = Order.build({
