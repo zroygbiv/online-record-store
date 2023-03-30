@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { 
-  validateRequest, NotFoundError, requireAuth, NotAuthorizedError 
+  validateRequest, NotFoundError, requireAuth, NotAuthorizedError, BadRequestError 
 } from '@zroygbiv-ors/sharedcode';
 import { Record } from '../models/record';
 import { RecordUpdatedPublisher } from '../events/publishers/record-updated-publisher';
@@ -28,6 +28,11 @@ router.put(
   if (!record) {
     throw new NotFoundError();
   }
+
+  if (record.orderId) {
+    throw new BadRequestError('Cannot edit a reserved record');
+  }
+  
   if (record.userId !== req.currentUser!.id) {
     throw new NotAuthorizedError();
   }

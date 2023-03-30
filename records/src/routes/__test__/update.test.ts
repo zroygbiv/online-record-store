@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
+import { Record } from '../../models/record';
 import { natsWrapper } from '../../nats-wrapper';
 
 it('returns a 404 if provided id does not exist', async () => {
@@ -103,6 +104,7 @@ it('updates record provided valid inputs', async () => {
 
 it('successfully publishes an event', async () => {
   const cookie = global.signin();
+
   const response = await request(app)
     .post('/api/records')
     .set('Cookie', cookie)
@@ -121,4 +123,30 @@ it('successfully publishes an event', async () => {
     .expect(200);
 
   expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
+
+it('rejects updates if record is reserved', async () => {
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post('/api/records')
+    .set('Cookie', cookie)
+    .send({
+      title:'asdfsgj',
+      price: 20
+    });
+
+  const record = await Record.findById(response.body.id);
+  record!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+  
+  await record!.save();
+
+  await request(app)
+    .put(`/api/records/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'new title',
+      price: 100
+    })
+    .expect(400);  
 });
