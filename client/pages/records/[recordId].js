@@ -15,7 +15,7 @@ const RecordShow = ({ record }) => {
     <h4>Title: {record.title}</h4>
     <h4>Price: {record.price}</h4>
     {errors}
-    <button onClick={doRequest} className="btn btn-primary">Purchase</button>
+    <button onClick={() => doRequest()} className="btn btn-primary">Purchase</button>
   </div>;
 };
 

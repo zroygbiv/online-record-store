@@ -1,18 +1,27 @@
-import { useState, useEffect } from "react";
-import StripeCheckout from 'react-stripe-checkout';
-
+import { useEffect, useState } from "react";
+import StripeCheckout from "react-stripe-checkout";
+import Router from "next/router";
+import useRequest from "../../hooks/use-request";
 
 const OrderShow = ({ order, currentUser }) => {
-  const [timeLeft, setTimeLeft] = useState('');
+  const [timeLeft, setTimeLeft] = useState(0);
+  const { doRequest, errors } = useRequest({
+    url: "/api/payments",
+    method: "post",
+    body: {
+      orderId: order.id,
+    },
+    onSuccess: () => Router.push("/orders"),
+  });
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
+    const findTimeLeft = () => {
       const msLeft = new Date(order.expiresAt) - new Date();
       setTimeLeft(Math.round(msLeft / 1000));
-    }
+    };
 
-    calculateTimeLeft();
-    const timerId = setInterval(calculateTimeLeft, 1000);
+    findTimeLeft();
+    const timerId = setInterval(findTimeLeft, 1000);
 
     return () => {
       clearInterval(timerId);
@@ -20,27 +29,28 @@ const OrderShow = ({ order, currentUser }) => {
   }, [order]);
 
   if (timeLeft < 0) {
-    return <div>Order has expired</div>
+    return <div>Order Expired</div>;
   }
-  
+
   return (
     <div>
-      Order expires: {timeLeft} seconds
-      <StripeCheckout 
-        token={(token) => console.log(token)} 
+      Time left to pay: {timeLeft} seconds
+      <StripeCheckout
+        token={({ id }) => doRequest({ token: id })}
         stripeKey="pk_test_51MrSXlFFLuJmXinVExAWQWnrdyl6AjegRppYFdRs1eCtOzkn9jKnld6V84l3EjX5SfFp9qr6RcgeTnnHsuuG7sDX00HG9J0a4A"
         amount={order.record.price * 100}
         email={currentUser.email}
-        />
+      />
+      {errors}
     </div>
   );
-}
+};
 
 OrderShow.getInitialProps = async (context, client) => {
-  const {orderId} = context.query;
+  const { orderId } = context.query;
   const { data } = await client.get(`/api/orders/${orderId}`);
 
   return { order: data };
-}
+};
 
 export default OrderShow;

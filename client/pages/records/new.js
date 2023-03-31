@@ -34,7 +34,7 @@ const NewRecord = () => {
 
   return (
     <div>
-      <h1>Sell your Record</h1>
+      <h1>Enter Record Information</h1>
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Title</label>
