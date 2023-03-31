@@ -4,7 +4,9 @@ import { Record } from '../models/record';
 const router = express.Router();
 
 router.get('/api/records', async (req: Request, res: Response) => {
-  const records = await Record.find({});
+  const records = await Record.find({
+    orderId: undefined
+  });
 
   res.send(records);
 });
