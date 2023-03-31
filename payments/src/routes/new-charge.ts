@@ -19,12 +19,8 @@ const router = express.Router();
 router.post('/api/payments', 
   requireAuth,
   [
-    body('token')
-      .not()
-      .isEmpty(),
-    body('orderId')
-      .not()
-      .isEmpty()
+    body('token').not().isEmpty(),
+    body('orderId').not().isEmpty()
   ],
   validateRequest,
   async (req: Request, res: Response) => {
