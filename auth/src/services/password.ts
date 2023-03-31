@@ -19,6 +19,3 @@ export class PasswordManager {
     return buffer.toString('hex') === hashedPassword;
   }
 }
-
-// Password.toHash
-// Password.compare
