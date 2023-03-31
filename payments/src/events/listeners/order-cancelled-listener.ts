@@ -1,7 +1,12 @@
-import { Listener, OrderCancelledEvent, OrderStatus, Subjects } from "@zroygbiv-ors/sharedcode";
-import { Message } from "node-nats-streaming";
-import { Order } from "../../models/order";
-import { queueGroupName } from "./queue-group-name";
+import {
+  OrderCancelledEvent,
+  Subjects,
+  Listener,
+  OrderStatus,
+} from '@zroygbiv-ors/sharedcode';
+import { Message } from 'node-nats-streaming';
+import { queueGroupName } from './queue-group-name';
+import { Order } from '../../models/order';
 
 export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
   subject: Subjects.OrderCancelled = Subjects.OrderCancelled;
@@ -10,7 +15,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
   async onMessage(data: OrderCancelledEvent['data'], msg: Message) {
     const order = await Order.findOne({
       _id: data.id,
-      version: data.version - 1
+      version: data.version - 1,
     });
 
     if (!order) {
@@ -18,7 +23,6 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
     }
 
     order.set({ status: OrderStatus.Cancelled });
-    
     await order.save();
 
     msg.ack();

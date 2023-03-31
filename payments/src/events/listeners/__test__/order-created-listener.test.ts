@@ -1,9 +1,9 @@
-import { OrderCreatedEvent, OrderStatus } from "@zroygbiv-ors/sharedcode";
-import mongoose from "mongoose";
-import { Message } from "node-nats-streaming";
-import { Order } from "../../../models/order";
-import { natsWrapper } from "../../../nats-wrapper";
-import { OrderCreatedListener } from "../order-created-listener";
+import mongoose from'mongoose';
+import { Message } from 'node-nats-streaming';
+import { OrderCreatedEvent, OrderStatus } from '@zroygbiv-ors/sharedcode';
+import { natsWrapper } from '../../../nats-wrapper';
+import { OrderCreatedListener } from '../order-created-listener';
+import { Order } from '../../../models/order';
 
 const setup = async () => {
   const listener = new OrderCreatedListener(natsWrapper.client);
@@ -11,22 +11,22 @@ const setup = async () => {
   const data: OrderCreatedEvent['data'] = {
     id: new mongoose.Types.ObjectId().toHexString(),
     version: 0,
-    expiresAt: 'asdfg',
-    userId: 'asdfg',
+    expiresAt: 'alskdjf',
+    userId: 'alskdjf',
     status: OrderStatus.Created,
     record: {
-      id: 'asdfg',
-      price: 30
-    }
-  }
+      id: 'alskdfj',
+      price: 10,
+    },
+  };
 
   // @ts-ignore
   const msg: Message = {
-    ack: jest.fn()
+    ack: jest.fn(),
   };
 
   return { listener, data, msg };
-}
+};
 
 it('replicates order info', async () => {
   const { listener, data, msg } = await setup();

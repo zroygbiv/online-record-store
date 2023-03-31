@@ -1,6 +1,6 @@
-import { OrderStatus } from "@zroygbiv-ors/sharedcode";
-import { updateIfCurrentPlugin } from "mongoose-update-if-current";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { OrderStatus } from '@zroygbiv-ors/sharedcode';
 
 interface OrderAttrs {
   id: string;
@@ -14,34 +14,37 @@ interface OrderDoc extends mongoose.Document {
   version: number;
   userId: string;
   price: number;
-  status: OrderStatus;  
+  status: OrderStatus;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
 }
 
-const orderSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    require: true
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+    },
   },
-  price: {
-    type: Number,
-    require: true
-  },
-  status: {
-    type: String,
-    required: true
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
   }
-}, {
-  toJSON: {
-    transform(doc, ret) {
-      ret.id = ret._id;
-      delete ret._id;
-    }
-  }
-});
+);
 
 orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
@@ -52,7 +55,7 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
     version: attrs.version,
     price: attrs.price,
     userId: attrs.userId,
-    status: attrs.status
+    status: attrs.status,
   });
 };
 
