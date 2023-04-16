@@ -9,5 +9,5 @@ The intial version of a web application that allows users to create new accounts
 - Stripe API for payment transactions
 - Mongoose and MongoDB for database structuring/access
 - Jest for unit testing
-- Docker for creating service image files
+- Docker for containerization
 - Kubernetes for container management 
